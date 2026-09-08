@@ -244,3 +244,30 @@ an O(0.5) residual in the constraint it is supposed to enforce.
 
 `.dat`, `.sta`, `.frd`, `.log`, `.png` are gitignored on purpose — only the
 inputs and the generators are committed.
+
+### Reproducibility
+
+The container was restarted mid-session; the run was repeated from the
+committed deck with the same binary.  Every headline number came back
+identical to the printed digits:
+
+| quantity | first run | repeat |
+|---|---|---|
+| accepted increments | 999 | 999 |
+| lambda at the limit point | 0.805613 | 0.805613 |
+| increment of the limit point | 200 | 200 |
+| post-peak accepted increments | 798 | 798 |
+| lambda at the end | 0.705259 | 0.705259 |
+| phi at the end | 1.996000e-03 | 1.996000e-03 |
+| F against the closed form | 0.0000 % | 0.0000 % at all five samples |
+
+`u` is non-monotone in both, 0.040281 at the peak down to 0.03526 at the
+end (the two runs differ by 6e-06 there, 0.017 %, which is the last
+sampled row rather than a solver difference).
+
+The run terminates **cleanly**: `theta` reaches 1.0 at increment 1000 and
+CalculiX exits 0.  It stops because the pseudo-time budget is spent, not
+because anything failed to converge - `phi` has reached 1.996e-03 of
+`df = 0.01`, so about 20 % of the branch.  Carrying it to full separation
+needs more increments or an adaptive `dphi` (small at the `d0` kink, larger
+afterwards); `dphi` is constant today.
